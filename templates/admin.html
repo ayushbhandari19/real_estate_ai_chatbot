@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h2>📊 Admin Dashboard</h2>
+
+  <h3>📞 Leads</h3>
+  <pre id="leads"></pre>
+
+  <h3>💬 Conversations</h3>
+  <pre id="sessions"></pre>
+
+<script>
+fetch("/admin/data")
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById("leads").textContent =
+      JSON.stringify(data.leads, null, 2);
+
+    document.getElementById("sessions").textContent =
+      JSON.stringify(data.sessions, null, 2);
+  });
+</script>
+</body>
+</html>

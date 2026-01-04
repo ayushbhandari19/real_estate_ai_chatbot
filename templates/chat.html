@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real Estate Chatbot</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h2>🏠 Real Estate Assistant</h2>
+
+  <div id="chat"></div>
+
+  <input id="msg" placeholder="Type your message..." />
+  <button onclick="send()">Send</button>
+
+  <hr>
+
+  <h3>📞 Get Callback</h3>
+  <input id="name" placeholder="Name">
+  <input id="phone" placeholder="Phone">
+  <input id="email" placeholder="Email">
+  <button onclick="lead()">Submit</button>
+
+<script>
+const sessionId = "user_" + Math.random().toString(36).substring(7);
+
+function send() {
+  const msg = document.getElementById("msg").value;
+  fetch("/chat", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({message: msg, session_id: sessionId})
+  })
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById("chat").innerHTML += `<p><b>You:</b> ${msg}</p>`;
+    document.getElementById("chat").innerHTML += `<p><b>Bot:</b> ${d.reply}</p>`;
+    document.getElementById("msg").value = "";
+  });
+}
+
+function lead() {
+  fetch("/lead", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: name.value,
+      phone: phone.value,
+      email: email.value
+    })
+  }).then(() => alert("Lead submitted ✅"));
+}
+</script>
+</body>
+</html>
