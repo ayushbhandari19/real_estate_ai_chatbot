@@ -1,42 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Real Estate Chatbot</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <title>EstateAssist – Real Estate AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <h2>🏠 Real Estate Assistant</h2>
+    
+      
 
-  <div id="chat"></div>
+  <!-- Header -->
+  <header class="navbar">
+    <div class="logo">🏠 <span>EstateAssist</span></div>
+    <div class="nav-text">AI-powered property assistance</div>
+  </header>
 
-  <input id="msg" placeholder="Type your message..." />
-  <button onclick="send()">Send</button>
+  <!-- Main Container -->
+  <main class="container">
 
-  <hr>
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Find the Right Property Faster</h1>
+      <p>Chat with our AI assistant to buy, rent, or explore properties.</p>
+      <p class="trust">✔ Used by local property experts • Secure & private</p>
 
-  <h3>📞 Get Callback</h3>
-  <input id="name" placeholder="Name">
-  <input id="phone" placeholder="Phone">
-  <input id="email" placeholder="Email">
-  <button onclick="lead()">Submit</button>
+    </section>
+
+    <!-- Chat Card -->
+    <section class="chat-card">
+      <div id="chat"></div>
+      <script>
+        document.getElementById("chat").innerHTML =
+          `<div class="bubble bot">
+            👋 Hi! I’m your AI real estate assistant.<br><br>
+            Tell me what you're looking for — buy, rent, budget, or city.
+          </div>`;
+        </script>
+        
+
+      <div class="chat-input">
+        <input id="msg" placeholder="Type your property requirement…" />
+
+        <button onclick="send()">Send</button>
+      </div>
+    </section>
+
+    <!-- Lead Card -->
+    <section class="lead-card">
+      <h2>📞 Request a Callback</h2>
+      <p>Our property expert will contact you shortly.</p>
+
+      <input id="name" placeholder="Your Name" />
+      <input id="phone" placeholder="Phone Number" />
+      <input id="email" placeholder="Email Address" />
+
+      <button class="cta" onclick="lead()">Get Callback</button>
+    </section>
+
+  </main>
 
 <script>
 const sessionId = "user_" + Math.random().toString(36).substring(7);
 
 function send() {
   const msg = document.getElementById("msg").value;
+  if (!msg) return;
+
+  document.getElementById("chat").innerHTML +=
+    `<div class="bubble user">${msg}</div>`;
+
   fetch("/chat", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({message: msg, session_id: sessionId})
+    body: JSON.stringify({ message: msg, session_id: sessionId })
   })
   .then(r => r.json())
   .then(d => {
-    document.getElementById("chat").innerHTML += `<p><b>You:</b> ${msg}</p>`;
-    document.getElementById("chat").innerHTML += `<p><b>Bot:</b> ${d.reply}</p>`;
-    document.getElementById("msg").value = "";
+    document.getElementById("chat").innerHTML +=
+      `<div class="bubble bot">${d.reply.replace(/\n/g, "<br>")}</div>`;
+
+    document.getElementById("chat").scrollTop =
+      document.getElementById("chat").scrollHeight;
+
+    // ✅ GUARANTEED CTA SCROLL
+    if (d.show_lead_form) {
+      const leadForm = document.getElementById("lead-form");
+      if (leadForm) {
+        const y = leadForm.getBoundingClientRect().top + window.pageYOffset - 20;
+        window.scrollTo({
+          top: y,
+          behavior: "smooth"
+        });
+      }
+    }
   });
+
+  document.getElementById("msg").value = "";
 }
+
+
 
 function lead() {
   fetch("/lead", {
@@ -47,8 +110,9 @@ function lead() {
       phone: phone.value,
       email: email.value
     })
-  }).then(() => alert("Lead submitted ✅"));
+  }).then(() => alert("✅ Thank you! Our team will contact you shortly."));
 }
 </script>
+
 </body>
 </html>
