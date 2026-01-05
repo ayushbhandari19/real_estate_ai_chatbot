@@ -83,21 +83,30 @@ function send() {
     document.getElementById("chat").scrollTop =
       document.getElementById("chat").scrollHeight;
 
-    // ✅ GUARANTEED CTA SCROLL
+    // ✅ CTA ACTIVATION (FINAL)
     if (d.show_lead_form) {
-      const leadForm = document.getElementById("lead-form");
-      if (leadForm) {
-        const y = leadForm.getBoundingClientRect().top + window.pageYOffset - 20;
-        window.scrollTo({
-          top: y,
-          behavior: "smooth"
-        });
+      const leadCard = document.querySelector(".lead-card");
+      const ctaBtn = document.querySelector(".cta");
+      const msgInput = document.getElementById("msg");
+
+      if (leadCard) {
+        leadCard.classList.add("highlight");
+      }
+
+      if (ctaBtn) {
+        ctaBtn.innerText = "Get Matching Properties";
+      }
+
+      if (msgInput) {
+        msgInput.disabled = true;
+        msgInput.placeholder = "Please share your contact details below 👇";
       }
     }
   });
 
   document.getElementById("msg").value = "";
 }
+
 
 
 
